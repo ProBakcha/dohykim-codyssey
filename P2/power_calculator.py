@@ -22,7 +22,6 @@ def main():
 
     try:
         exponent_input = input("Enter exponent: ")
-        exponent_input = float(exponent_input)
         exponent = int(exponent_input)
     except ValueError:
         print("Invalid exponent input.")
