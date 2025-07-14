@@ -1,39 +1,40 @@
-def add(a, b):
-    return a + b
-
-def subtract(a, b):
-    return a - b
-
-def multiply(a, b):
-    return a * b
-
+def add(a, b): return float(a + b)
+def subtract(a, b): return float(a - b)
+def multiply(a, b): return float(a * b)
 def divide(a, b):
     if b == 0:
+        print("Error: Division by zero.")
         return None
-    return a / b
+    return float(a / b)
 
-if __name__ == "__main__":
+operations = {'+': add, '-': subtract, '*': multiply, '/': divide}
+
+def auto_mode_calculator(user_input):
     try:
-        a = int(float(input("첫 번째 실수 입력: ")))
-        b = int(float(input("두 번째 실수 입력: ")))
-        op = input("연산자 (+, -, *, /)를 입력하세요: ")
+        op = next((o for o in operations if o in user_input), None)
 
-        if op == '+':
-            result = add(a, b)
-        elif op == '-':
-            result = subtract(a, b)
-        elif op == '*':
-            result = multiply(a, b)
-        elif op == '/':
-            if b == 0:
-                print("Error: Division by zero.")
-                exit()
-            result = divide(a, b)
-        else:
+        if op:  # expression 모드
+            left, right = user_input.split(op)
+            a, b = int(float(left.strip())), int(float(right.strip()))
+        else:  # basic 모드
+            a = int(float(user_input))
+            b = int(float(input("input number: ")))
+            op = input("input operator(+, -, *, /): ").strip()
+
+        func = operations.get(op)
+        if not func:
             print("Invalid operator.")
-            exit()
+            return
 
-        print(f"Result: {result}")
+        result = func(a, b)
+        if result is not None:
+            print(f"Result: {result}")
 
     except ValueError:
-        print("Invalid input. Please enter integers only.")
+        print("Invalid number input.")
+    except Exception:
+        print("An error occurred.")
+
+if __name__ == "__main__":
+    user_input = input("Enter expression: ").strip()
+    auto_mode_calculator(user_input)
