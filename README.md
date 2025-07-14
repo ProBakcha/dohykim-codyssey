@@ -1,2 +1,0 @@
-# dohykim-codyssey
-Codessey
