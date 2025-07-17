@@ -9,16 +9,11 @@ def divide(a, b):
 
 operations = {'+': add, '-': subtract, '*': multiply, '/': divide}
 
-def calculate_with_priority(expression):
+def calculate_with_priority(tokens):
     try:
-        tokens = expression.split()
-        if len(tokens) % 2 == 0 or not tokens:
-            raise ValueError()
-        
         nums = [float(tokens[i]) for i in range(0, len(tokens), 2)]
         ops = tokens[1::2]
         
-        # 연산자 유효성 검사 추가
         if not all(op in operations for op in ops):
             raise ValueError()
         
@@ -39,8 +34,8 @@ def calculate_with_priority(expression):
         return "Invalid input."
 
 def main():
-    user_input = input("Enter expression: ").strip()
-    result = calculate_with_priority(user_input)
+    tokens = input("Enter expression: ").strip().split()
+    result = calculate_with_priority(tokens)
     
     if isinstance(result, str):
         print(result)
