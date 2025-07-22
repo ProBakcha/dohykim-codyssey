@@ -1,22 +1,38 @@
-from flask import Flask, request, Response
-import os
+from flask import Flask, request, render_template
 from io import BytesIO
 from gtts import gTTS
+import base64
+import datetime
 
-DEFAULT_LANG = os.getenv("DEFAULT_LANG", "ko")
+
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/", methods=["GET","POST"])
 def home():
+    error = None
+    audio = None
 
-    text = "Hello, DevOps"
+    if request.method == "POST":
+        text = request.form.get("input_text")
+        lang = request.form.get("lang", "ko")
 
-    lang = request.args.get("lang", DEFAULT_LANG)
-    fp = BytesIO()
-    gTTS(text, "com", lang).write_to_fp(fp)
+        if not text.strip():
+            error = "!! 텍스트를 입력하세요 !!"
+        else:
+            try:
+                with open("input_log.txt", "a", encoding="utf-8") as f:
+                    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    f.write(f"[{now}] lang={lang} input_text={text}\n")
+                tts = gTTS(text=text, lang=lang)
+                fp = BytesIO()
+                tts.write_to_fp(fp)
+                fp.seek(0)
+                audio = base64.b64encode(fp.read()).decode("utf-8")
+            except Exception as e:
+                error = f"음성변환 중 오류 발생: {str(e)}"      
 
-    return Response(fp.getvalue(), mimetype="audio/mpeg")  # 페이지 전달없이 바로 재생
+    return render_template("index.html", error=error, audio=audio)
 
 
 if __name__ == "__main__":
