@@ -1,6 +1,5 @@
 # add-image!!#
-#dd-image!!#222
-#This is main
+# 두줄 지웠음
 from flask import Flask, request, render_template
 from io import BytesIO
 from gtts import gTTS
